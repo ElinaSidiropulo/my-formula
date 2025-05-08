@@ -1,0 +1,101 @@
+services:
+  eureka-service:
+    build:
+      context: ./eureka-service
+    ports:
+      - "8761:8761"
+    networks:
+      - myformula-network
+
+  driver-service:
+    build:
+      context: ./driver-service
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    networks:
+      - myformula-network
+    environment:
+      - EUREKA_SERVER=http://eureka-service:8761/eureka
+    depends_on:
+      - eureka-service
+      - postgres-driver
+
+  team-service:
+    build:
+      context: ./team-service
+      dockerfile: Dockerfile
+    ports:
+      - "9091:9091"
+    networks:
+      - myformula-network
+    environment:
+      - EUREKA_SERVER=http://eureka-service:8761/eureka
+    depends_on:
+      - eureka-service
+      - postgres-team
+
+  race-service:
+    build:
+      context: ./race-service
+      dockerfile: Dockerfile
+    ports:
+      - "9092:9092"
+    networks:
+      - myformula-network
+    environment:
+      - EUREKA_SERVER=http://eureka-service:8761/eureka
+    depends_on:
+      - eureka-service
+      - postgres-race
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "9093:9093"
+    networks:
+      - myformula-network
+    depends_on:
+      - eureka-service
+
+  postgres-driver:
+    image: postgres:13
+    container_name: postgres-driver
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 4002
+      POSTGRES_DB: driver_service
+    ports:
+      - "5433:5432"
+    networks:
+      - myformula-network
+
+  postgres-team:
+    image: postgres:13
+    container_name: postgres-team
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 4002
+      POSTGRES_DB: team_service
+    ports:
+      - "5434:5432"
+    networks:
+      - myformula-network
+
+  postgres-race:
+    image: postgres:13
+    container_name: postgres-race
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 4002
+      POSTGRES_DB: race_service
+    ports:
+      - "5435:5432"
+    networks:
+      - myformula-network
+
+networks:
+  myformula-network:
+    driver: bridge

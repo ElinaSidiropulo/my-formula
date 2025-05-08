@@ -35,3 +35,7 @@ dependencyManagement {
 tasks.named('bootRun') {
     mainClass = 'com.example.teamservice.DriverServiceApplication'
 }
+
+bootJar {
+    archiveFileName = "team-service.jar"
+}
