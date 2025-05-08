@@ -7,4 +7,4 @@
  */
 
 rootProject.name = 'myformula'
-include 'eureka-service', 'driver-service', 'team-service', 'race-service'
+include 'eureka-service', 'driver-service', 'team-service', 'race-service', 'api-gateway'
